@@ -1,3 +1,5 @@
+require "pry"
+
 def find_item_by_name_in_collection(name, collection)
   # Implement me first!
   #
@@ -39,7 +41,7 @@ def consolidate_cart(cart)
   cart_array = []
   cart_hash = {}
   count = 0 
-  puts "***new consolidated cart*****"
+  
   while count <cart.length do 
     
     item_name = cart[count][:item]
@@ -70,15 +72,9 @@ def consolidate_cart(cart)
        cart_hash["#{item_name}"][:count] += 1 
     end   
     
-    #puts "array result:"
-    #puts cart_array 
-    #puts "hash result:"
-    #puts cart_hash
-    #puts "$$$"
     count += 1 
   end 
-  #puts "Consolidated cart below:"
-  #puts "#{cart_array} \n #{cart_hash} \n ***end consolidated cart***"
+
   return cart_array 
 end
 
@@ -88,8 +84,6 @@ def apply_coupons(cart, coupons)
   #
   # REMEMBER: This method **should** update cart
   
-  puts "***Coupon portion starting***"
-  #puts "Coupon length is #{coupons.length}"
   coupon_count = 0 
   new_cart = cart #establishes new copy of cart before looping 
   
@@ -119,8 +113,6 @@ def apply_coupons(cart, coupons)
     coupon_count += 1 
   end
   
-  #puts new_cart 
-  puts "***End Coupons"
   return new_cart
 end
 
@@ -138,7 +130,7 @@ def apply_clearance(cart)
       
       #applies discounted price, hardcoded to 20% off
       discounted_price = (cart[counter][:price]*0.8).round(2)
-      cart[counter][:price] = discounted_price
+      new_cart[counter][:price] = discounted_price #new_cart, used to be cart, this way preserves original cart 
     end 
   
   counter += 1 
@@ -161,13 +153,15 @@ def checkout(cart, coupons)
   
   total_price = 0.0 
   new_cart = consolidate_cart(cart)
-  new_cart = apply_coupons(new_cart, coupons)
-  new_cart = apply_clearance(new_cart)
+  new_cart_coup = apply_coupons(new_cart, coupons)
+  new_cart_total = apply_clearance(new_cart_coup)
   
-  price_index = 0 
-  while price_index < new_cart.length do 
-  
-  total_price += new_cart[price_index][:price]*new_cart[price_index][:count]
+   price_index = 0 
+
+   while price_index < new_cart_total.length do 
+
+  total_price += new_cart_total[price_index][:price] * new_cart_total[price_index][:count]
+  price_index += 1 
   end 
   
   if total_price > 100.00 
